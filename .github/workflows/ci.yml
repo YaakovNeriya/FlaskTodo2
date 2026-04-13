@@ -23,6 +23,14 @@ jobs:
       - name: Run integration test (inside docker network)
         run: docker compose run --rm testserver
 
+      - name: Login, Tag and Push to Docker Hub
+        # שלב זה ירוץ אלא אם כן משהו נכשל לפני כן (כמו הטסט)
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          # מתייגים מחדש את האימג' של האפליקציה שהרגע מצאנו שעובד כדי שיתאים לריפו שלך בדוקרהאב
+          docker tag flask_app:latest ${{ secrets.DOCKER_USERNAME }}/flask_todo_app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/flask_todo_app:latest
+
       - name: Shutdown containers
         if: always()
         run: docker compose down
