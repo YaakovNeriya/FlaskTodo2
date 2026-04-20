@@ -21,7 +21,42 @@
         {% endif %}
         <a href="/update/{{ todo.id }}">Update</a>
         <a href="/delete/{{ todo.id }}">Delete</a>
+        <button onclick="breakDownTask({{ todo.id }})" style="margin-left:10px; cursor:pointer;">✨ פירוק AI</button>
+        <div id="breakdown-{{ todo.id }}" style="color: #0056b3; font-size: 0.9em; margin-top: 5px;"></div>
+
     {% endfor %}
 </div>
+
+<script>
+async function breakDownTask(todoId) {
+    const div = document.getElementById(`breakdown-${todoId}`);
+    // אנימציית המתנה זמנית
+    div.innerHTML = "<em>ה-AI חושב ומפרק... ⏳</em>";
+    
+    try {
+        // פנייה מאחורי הקלעים לשרת שלנו, למסלול (Route) שבנינו קודם!
+        const response = await fetch(`/breakdown/${todoId}`);
+        const data = await response.json();
+        
+        if (data.steps) {
+            // הAI סיים והחזיר פריטים! נבנה מהם רשימה יפה
+            let html = "<strong>תתי משימות מומלצות:</strong><ul>";
+            data.steps.forEach(step => {
+                html += `<li>${step}</li>`;
+            });
+            html += "</ul>";
+            div.innerHTML = html; // מציג את הרשימה במסך
+        } else {
+            div.innerHTML = "<em style='color:red;'>שגיאה בפירוק המשימה</em>";
+        }
+    } catch (e) {
+        div.innerHTML = "<em style='color:red;'>שגיאה בתקשורת עם ה-AI</em>";
+    }
+}
+</script>
+
 {% endblock %}
+
+
+
 

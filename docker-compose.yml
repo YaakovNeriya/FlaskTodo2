@@ -11,6 +11,7 @@ services:
       DB_NAME: flask
       DB_USER: flask
       DB_PASSWORD: password
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
 
     links:
       # network connection with these services
