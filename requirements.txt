@@ -11,3 +11,4 @@ Werkzeug==0.15.5
 flask-sqlalchemy==2.4.0
 cryptography==3.4.7
 google-generativeai
+gunicorn
